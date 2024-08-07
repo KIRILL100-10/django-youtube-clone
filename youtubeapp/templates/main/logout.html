@@ -1,0 +1,9 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+<h2 class="text-center mb-4 up">Logout</h2>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-primary center">Logout</button>
+</form>
+{% endblock %}

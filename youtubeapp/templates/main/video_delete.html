@@ -1,0 +1,11 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+<h2 class="text-center mb-4 up">Delete Video</h2>
+<p>Are you sure you want to delete this video?</p>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a href="{% url 'profile' %}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}

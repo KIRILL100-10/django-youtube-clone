@@ -1,0 +1,19 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+<h2 class="text-center mb-4 up">All Videos</h2>
+<div class="row">
+    {% for video in videos %}
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <img src="{{ video.preview.url }}" class="card-img-top" alt="{{ video.title }}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ video.title }}</h5>
+                    <p class="card-text">{{ video.description }}</p>
+                    <a href="{% url 'video_detail' video.id %}" class="btn btn-primary">Watch</a>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

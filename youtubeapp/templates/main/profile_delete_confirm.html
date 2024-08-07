@@ -1,0 +1,11 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+<h2 class="text-center mb-4 up">Delete Profile</h2>
+<p>Are you sure you want to delete your profile? This action cannot be undone.</p>
+<form method="post" action="{% url 'profile_delete' %}">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Delete Profile</button>
+    <a href="{% url 'profile' %}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}

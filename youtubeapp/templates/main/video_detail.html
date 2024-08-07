@@ -1,0 +1,70 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-center">{{ video.title }}</h2>
+    <video controls width="100%">
+        <source src="{{ video.file.url }}" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    <p>{{ video.description }}</p>
+    <div>
+        <button id="like-button" class="like">
+            {% if is_liked %}Unlike{% else %}Like{% endif %} ({{ total_likes }})
+        </button>
+        <button id="subscribe-button" class="subscribe">
+            {% if is_subscribed %}Unsubscribe{% else %}Subscribe{% endif %} ({{ total_subscribers }})
+        </button>
+    </div>
+    <h3 style="margin-top: 40px">Comments</h3>
+    <a href="{% url 'add_comment' video.id %}" class="btn btn-primary" style="margin-top: 10px">Add Comment</a>
+    <ul class="list-group mt-3">
+        {% for comment in comments %}
+            <li class="list-group-item d-flex justify-content-between">
+                <div>
+                    <strong>{{ comment.author.username }}</strong>: {{ comment.text }}
+                </div>
+                {% if comment.author == request.user %}
+                    <form action="{% url 'delete_comment' comment.id %}" method="post" style="display:inline;">
+                        {% csrf_token %}
+                        <a href="{% url 'edit_comment' video.id comment.id %}" class="btn btn-sm btn-secondary ml-3">Edit</a>
+                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                    </form>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+
+<script>
+    document.getElementById('like-button').addEventListener('click', function() {
+        fetch("{% url 'like_video' video.id %}", {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            this.textContent = data.liked ? 'Unlike' : 'Like';
+            this.textContent += ` (${data.total_likes})`;
+        });
+    });
+
+    document.getElementById('subscribe-button').addEventListener('click', function() {
+        fetch("{% url 'subscribe_channel' video.author.id %}", {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            this.textContent = data.subscribed ? 'Unsubscribe' : 'Subscribe';
+            this.textContent += ` (${data.total_subscribers})`;
+        });
+    });
+</script>
+{% endblock %}
